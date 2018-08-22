@@ -7,7 +7,7 @@ from keras.layers import Conv2D, Flatten
 from keras.layers import Reshape, Conv2DTranspose
 from keras.models import Model
 from keras.callbacks import ReduceLROnPlateau, ModelCheckpoint
-from keras.datasets import cifar10
+from keras.datasets import cifar10, mnist
 from keras.utils import plot_model
 from keras import backend as K
 import cv2
@@ -20,8 +20,8 @@ import histogram_equalization as hist
 written by wooramkang 2018.08.20
 
 referenced from lots of papers and gits
-if you need those, i'll send you
 
+if i write, the list of those will be tons of lines haha
 """
 
 
@@ -29,7 +29,7 @@ if you need those, i'll send you
 def main_color():
     # load the CIFAR10 data
     (x_train, _), (x_test, _) = cifar10.load_data()
-
+    #(x_train, _), (x_test, _) = mnist.load_data()
     """
     for preprocessing,
     RGB to LAB
@@ -39,16 +39,21 @@ def main_color():
     
     LAB to RGB 
     """
-
     x_train_prime = []
     for _img in x_train:
-        x_train_prime.append(hist.preprocessing_hist(_img))
+        #_img = cv2.cvtColor(_img, cv2.COLOR_GRAY2RGB)
+        #_img = cv2.resize(_img, (32, 32))
+        _img = hist.preprocessing_hist(_img)
+        x_train_prime.append(_img)
     x_train = np.array(x_train_prime)
     print(x_train.shape)
 
     x_test_prime = []
     for _img in x_test:
-        x_test_prime.append(hist.preprocessing_hist(_img))
+        #_img = cv2.cvtColor(_img, cv2.COLOR_GRAY2RGB)
+        #_img = cv2.resize(_img, (32, 32))
+        _img = hist.preprocessing_hist(_img)
+        x_test_prime.append(_img)
     x_test = np.array(x_test_prime)
     print(x_test.shape)
     """
@@ -56,8 +61,16 @@ def main_color():
 
     depending on CLAHE parameters,
     
-
+    depending on dataset, you could use resizing and colorizing as well 
+    
+    08.22
+    filter grid size    
+        2 * 2
+        4 * 4
+        8 * 8
+        16 * 16
     """
+
     img_rows = x_train.shape[1]
     img_cols = x_train.shape[2]
     channels = x_train.shape[3]
@@ -73,6 +86,7 @@ def main_color():
     for _img in imgs:
         i = i+1
         Image.fromarray(_img).save('saved_images/{0}_img_raw.png'.format(i))
+    #print raw img each image by image
 
     imgs = imgs.reshape((10, 10, img_rows, img_cols, channels))
     imgs = np.vstack([np.hstack(i) for i in imgs])
@@ -166,10 +180,12 @@ def main_color():
     imgs = x_decoded[:100]
     print(imgs.shape)
     imgs = (imgs * 255).astype(np.uint8)
+
     i = 0
     for _img in imgs:
         i = i + 1
         Image.fromarray(_img).save('saved_images/{0}_img_gen.png'.format(i))
+    #print generated img each image by image
 
     imgs = imgs.reshape((10, 10, img_rows, img_cols, channels))
     imgs = np.vstack([np.hstack(i) for i in imgs])
