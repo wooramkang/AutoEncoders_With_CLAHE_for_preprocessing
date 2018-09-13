@@ -3,7 +3,7 @@
 #contrast_limited_adaptive_histogram_equalization
 
 import cv2
-from preprocessing.LAB_luminance import *
+from LAB_luminance import *
 """
     written by wooram 2018.08. 17
 """
