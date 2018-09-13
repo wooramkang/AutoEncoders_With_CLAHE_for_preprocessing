@@ -97,7 +97,7 @@ def Autoencoder_residualnet(inputs, input_shape):
                strides=1,
                activation='relu',
                padding='same')(x_t)
-        x = BatchNormalization()(x)/home/rd/recognition_reaserch/FACE/AutoEncoders_With_CLAHE_for_preprocessing/saved_images/sumof_img_gen.png
+        x = BatchNormalization()(x)
         x = Activation('relu')(x)
         x = Concatenate(axis=channel_axis)([x, inputs])
 
